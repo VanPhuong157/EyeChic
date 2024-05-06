@@ -1,0 +1,118 @@
+﻿@model IEnumerable<EyeChic_MVC.Models.Account>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    /* Container style */
+    .container {
+        max-width: 950px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa; /* Màu nền cho container */
+        border-radius: 5px; /* Bo tròn các góc của container */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho container */
+    }
+
+    /* Header style */
+    h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* "Create New" link style */
+    .create-link {
+        text-align: right;
+        margin-bottom: 20px;
+    }
+
+        .create-link a {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .create-link a:hover {
+                background-color: #0056b3;
+            }
+
+    /* Table style */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px; /* Tăng padding để tạo khoảng cách giữa nội dung và viền */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Action links style */
+    .action-links a {
+        margin-right: 10px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+
+</style>
+
+<div class="container">
+    <h1>Accounts managerment</h1>
+
+    <p class="create-link">
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Fullname</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Fullname)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Password)</td>
+                    <td>
+                        @if (item.Role == 1)
+                        {
+                            <span>Admin</span>
+                        }
+                        else
+                        {
+                            <span>User</span>
+                        }
+                    </td>
+                    <td class="action-links">
+                        <a asp-action="Edit" asp-route-id="@item.AccountId">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.AccountId">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.AccountId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

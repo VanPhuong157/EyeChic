@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giỏ hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy/jTI6AAeGXhR5gce2CCD9gXaHb8Mq7xj" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa; /* Màu nền của trang */
+        }
+
+        .container {
+            max-width: 120%; /* Chiếm 80% của trang */
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: #fff; /* Màu nền của card */
+        }
+
+        .card-header {
+            background-color: #ee4d2d; /* Màu nền của tiêu đề */
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 20px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-control {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
+
+        .btn-primary {
+            background-color: #ee4d2d; /* Màu nền của nút */
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: #fff;
+        }
+
+            .btn-primary:hover {
+                background-color: #ff6f3c;
+            }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background-color: #f8f9fa; /* Màu nền của header bảng */
+                color: #333;
+                border-top: none;
+                border-bottom: 2px solid #ddd;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+            .table tbody tr {
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table tbody td {
+                vertical-align: middle;
+            }
+
+            .table tbody input[type="number"] {
+                width: 60px;
+                text-align: center;
+                border: 1px solid #ddd;
+            }
+
+            .table tbody .btn-danger {
+                padding: 5px 10px;
+                font-size: 14px;
+                border-radius: 20px;
+                background-color: #dc3545;
+                color: #fff;
+                border: none;
+            }
+
+                .table tbody .btn-danger:hover {
+                    background-color: #c82333;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-center">Giỏ hàng</h1>
+            </div>
+            @{
+                decimal total = 0;
+
+            }
+            <div class="card-body">
+                <form method="post" asp-action="CreateCart" asp-controller="Carts">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                    @* <th>Xóa</th> *@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    @for (int i = 0; i < Model.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td><img src="@Model[i].Product.Img" alt="Ảnh sản phẩm" style="max-width: 50px; max-height: 50px;" /></td>
+                                            <td> @Model[i].Product.ProductName</td>
+                                            <td>
+                                                <input type="number" name="CartItems[@i].Quantity" class="form-control" value="@Model[i].num" onchange="redirectToCart(@Model[i].Product.ProductId)" />
+                                                <script>
+                                    function redirectToCart(productId) {
+                                        var num = document.querySelector(`input[name="CartItems[@i].Quantity"]`).value;
+                                        var url = `../Carts/AddToCart?id=${productId}&num=${num}`;
+                                        window.location.href = url;
+                                    }
+                                </script>
+                                            </td>
+                                            <td>@(Model[i].num * Model[i].Product.Price)</td>
+                                     @*        <td>
+                                                <a href="../Cart/RemoveCart?id=@Model[i].Product.ProductId" class="btn btn-danger">Xóa</a>
+                                            </td> *@
+                                        </tr>
+                                        total += (decimal)(Model[i].num * Model[i].Product.Price);
+                                    }
+                                    <tr>
+                                        <td colspan="3">Total:</td>
+                                        <td colspan="2"> @total</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="orderDate">OrderDate:</label>
+                        <input type="date" id="orderDate" name="orderDate" class="form-control" required /> <br />
+                        <label for="shipDate">ShipDate:</label>
+                        <input type="date" id="shipDate" name="shipDate" class="form-control" required /> <br />
+                        <input type="hidden" id="totalPrice" name="totalPrice" value="@total" />
+                    </div>
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    <div>
+                        <input type="submit" value="Checkout" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy ngày hiện tại
+        var currentDate = new Date();
+
+        // Cập nhật giá trị của orderDate
+        var orderDateField = document.getElementById("orderDate");
+        var orderDateString = currentDate.toISOString().split('T')[0];
+        orderDateField.value = orderDateString;
+
+        // Tính ngày hiện tại + 7 ngày
+        currentDate.setDate(currentDate.getDate() + 7);
+
+        // Cập nhật giá trị của shipDate
+        var shipDateField = document.getElementById("shipDate");
+        var shipDateString = currentDate.toISOString().split('T')[0];
+        shipDateField.value = shipDateString;
+    </script>
+
+</body>
+</html>

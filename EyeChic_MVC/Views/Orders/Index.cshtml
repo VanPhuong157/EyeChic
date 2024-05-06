@@ -1,0 +1,155 @@
+﻿@model IEnumerable<EyeChic_MVC.Models.Order>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    int role = HttpContextAccessor.HttpContext.Session.GetInt32("Role") ?? -1;
+    string email = HttpContextAccessor.HttpContext.Session.GetString("Email") ?? "";
+}
+@{
+    ViewData["Title"] = "Index";
+
+    var bestProduct = ViewBag.BestProduct as EyeChic_MVC.Models.Product;
+    var lowestProduct = ViewBag.LowestProduct as EyeChic_MVC.Models.Product;
+}
+
+<h1>List Order</h1>
+@if (role == 1)
+                    {
+                        <div class="total-revenue">
+    <p>Total Revenue: @ViewData["TotalRevenue"] đ</p>
+</div>
+                    }
+
+<div class="selling-products">
+    <p class="product-description">Best Selling Product:</p>
+    <ul>
+        @if (bestProduct != null)
+        {
+            <li>@bestProduct.ProductName</li>
+        }
+        else
+        {
+            <li>No best-selling product found</li>
+        }
+    </ul>
+</div>
+
+<div class="selling-products">
+    <p class="product-description">Lowest Selling Product:</p>
+    <ul>
+        @if (lowestProduct != null)
+        {
+            <li>@lowestProduct.ProductName</li>
+        }
+        else
+        {
+            <li>No lowest-selling product found</li>
+        }
+    </ul>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order Date</th>
+            <th>Total Price</th>
+            <th>Ship Date</th>
+            <th>Status</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.ShipDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>@Html.DisplayFor(modelItem => item.Account.Email)</td>
+                <td>
+                    <a href="@Url.Action("Index", "OrderDetails", new { id = item.OrderId })">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    /* CSS của bạn */
+</style>
+
+
+<style>
+
+    /* CSS cho phần tử <p> */
+    p {
+        margin-bottom: 10px; /* Khoảng cách dưới của phần tử */
+        font-weight: bold; /* In đậm */
+    }
+
+        /* CSS cho phần tử <p> có class là "product-description" */
+        p.product-description {
+            color: #007bff; /* Màu chữ */
+            font-size: 18px; /* Kích thước font */
+        }
+
+    .selling-products {
+        margin-bottom: 20px;
+    }
+
+        .selling-products h2 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .selling-products ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .selling-products li {
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+        }
+
+            .selling-products li:hover {
+                background-color: #e2e2e2;
+            }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            color: #333;
+            text-align: left;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .table td a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+            .table td a:hover {
+                text-decoration: underline;
+            }
+</style>

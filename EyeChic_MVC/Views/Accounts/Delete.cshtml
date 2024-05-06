@@ -1,0 +1,122 @@
+﻿@model EyeChic_MVC.Models.Account
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<style>
+    /* Apply styles to html and body to ensure full page coverage */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container style */
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        height: 100%; /* Make the container fill the full height of the page */
+        display: flex; /* Use flexbox for centering content */
+        justify-content: center; /* Center content horizontally */
+        align-items: center; /* Center content vertically */
+    }
+
+    /* Header style */
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    /* Confirmation message style */
+    h4 {
+        color: #666;
+        text-align: center;
+    }
+
+    /* Account details style */
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .col-sm-2 {
+        font-weight: bold;
+    }
+
+    /* Delete button style */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    /* "Back to List" link style */
+    .back-link {
+        color: #007bff;
+        text-decoration: none;
+        margin-left: 10px;
+        display: inline-block;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="container">
+    <div>
+        <h2>Delete</h2>
+        <h4>Are you sure you want to delete this account?</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Fullname)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Fullname)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Password)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Password)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Role)
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.Role == 1)
+                {
+                    <span>Admin</span>
+                }
+                else
+                {
+                    <span>User</span>
+                }
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="AccountId" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+    </div>
+</div>
